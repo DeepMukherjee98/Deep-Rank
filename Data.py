@@ -15,7 +15,6 @@ def download_files(triplets_url):
     '''
 
     names = ['query','positive','negative']
-    index = 0
     flag=0
     file_dir = './'
     for triplet in tqdm(triplets_url):
@@ -40,9 +39,6 @@ def download_files(triplets_url):
         if flag == 0:
             triplets.append(final_path)
         flag = 0
-        index+=1
-        if(index%100==0 and index>=100):
-            print(index,"triplets added..")
 
 
 def dataset_loader(query):
