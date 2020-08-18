@@ -80,35 +80,9 @@ def _loss_tensor(y_true, y_pred):
     zero = tf.constant(0.0, shape=[1], dtype=tf.float32)
     return tf.maximum(loss,zero)
 
-batch_size=8
-
 
 model.compile(loss=_loss_tensor, optimizer=SGD(lr=0.001, momentum=0.9, nesterov=True))
-'''
-train_datagen = ImageDataGenerator(
-        rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True)
-test_datagen = ImageDataGenerator(rescale=1./255)
 
-train_generator = train_datagen.flow_from_directory(
-        r"F:\Deep rank\triplets\triplets.txt",
-        target_size=(224,224),
-        batch_size=batch_size
-        )
-validation_generator = test_datagen.flow_from_directory(
-        r'F:\Deep rank\triplets\triplets.txt',
-        target_size=(224,224),
-        batch_size=batch_size
-        )
-model.fit(
-        train_generator,
-        steps_per_epoch= int((15099)/batch_size),
-        epochs=25,
-        validation_data=validation_generator
-        )
-'''
 
 class DataGenerator(object):
     def __init__(self, params, target_size=(224, 224)):
@@ -117,17 +91,17 @@ class DataGenerator(object):
         self.idg = ImageDataGeneratorCustom(**params)
 
     def get_train_generator(self, batch_size):
-        return self.idg.flow_from_directory(r"F:/Deep rank",
+        return self.idg.flow_from_directory(r"C:\Users\meena\Desktop\Deep rank\Data",
                                             batch_size=batch_size,
                                             target_size=self.target_size,shuffle=False,
-                                            triplet_path  =r'F:/Deep rank/triplets/triplets.txt'
+                                            triplet_path  =r'C:\Users\meena\Desktop\Deep rank/triplets.txt'
                                            )
 
     def get_test_generator(self, batch_size):
-        return self.idg.flow_from_directory(r"F:/Deep rank",
+        return self.idg.flow_from_directory(r"C:\Users\meena\Desktop\Deep rank\Data",
                                             batch_size=batch_size,
                                             target_size=self.target_size, shuffle=False,
-                                            triplet_path  =r'F:/Deep rank/triplets/triplets.txt'
+                                            triplet_path  =r'C:\Users\meena\Desktop\Deep rank/triplets.txt'
                                         )
 
 
@@ -142,6 +116,13 @@ dg = DataGenerator({
 "fill_mode": 'nearest'
 }, target_size=(224, 224))
 
-batch_size = 8
+batch_size = 3
 batch_size *= 3
 train_generator = dg.get_train_generator(batch_size)
+
+train_steps_per_epoch = int((7443)/batch_size)
+train_epocs = 10
+deep_rank_model.fit_generator(train_generator,
+                        steps_per_epoch=train_steps_per_epoch,
+                        epochs=train_epocs
+                        )
